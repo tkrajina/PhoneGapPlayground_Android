@@ -1,0 +1,58 @@
+Instalirati android SDK, otpakirati, dodati u path:
+	export PATH=$PATH:~/<path_do_android_sdk>/tools:~/<path_do_android_sdk>/platform-tools
+
+Instalirati sve potrebne ROM-ove, isl s:
+	android sdk
+
+Kreirati android virtualku s:
+	android avd
+
+Pokupiti zip s https://github.com/cordova/cordova-android
+
+Odzipati,
+	cd cordova-android
+	bin/create ~/<path_do_projekta> info.puzz.test MyApp
+
+assets/www u direktoriju ~/<path_do_projekta> je u stvari sam projekt
+
+	cd ~/<path_do_projekta>
+	android avd
+
+...startati virtualku iz "android avk"
+
+Unstalirati/refreshati aplikaciju na virtualku:
+	ant clean debug install
+
+Release paket se može instalirati s
+	ant clean release install
+
+Ili samo zapakirati s
+	ant clean release
+
+...će kreirati paket za aplikaciju i instalirati ju na virtualku. I onda se s "ant clean debug install" može
+refreshati aplikacija i dalje razvijati.
+
+logcat (prve dvije linije samo ako adb shell ne radi kako treba):
+	puzz@puzz:~/apps/android-sdk-linux/platform-tools$ sudo ./adb shell
+
+ako logcat ne radi kako treba, pokušati restart:
+	puzz@puzz:~/apps/android-sdk-linux/platform-tools$ sudo ./adb kill-server
+	puzz@puzz:~/apps/android-sdk-linux/platform-tools$ sudo ./adb start-server
+
+Ako se treba vrtiti za neku stariju verziju androida, promijeniti u AndroidManifest.xml:
+	<uses-sdk android:minSdkVersion="5" />
+
+Ukoliko se apk kopira na pravi andrdoid uređaj, on ga neće htjeti instalirati ukoliko nije ispravno potpisana:
+
+POTPISIVANJE APLIKACIJE
+	Primjer kreiranja privatnog ključa (keytool dolazi s java SDK-om):
+		keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
+
+	Dodati fajl build.properties sa:
+		key.store=my-release-key.keystore
+		key.alias=alias_name
+	
+	U build.xml dodati include na taj fajl:
+		<property file="build.properties" />
+
+Potrebne ovlasti za aplikaciju, ikone isl. se postavljaju u AndroidManifest.xml
